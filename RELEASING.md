@@ -8,7 +8,7 @@
 
 That's it. `npm run release` checks everything, tags the commit `v0.3.0` and pushes the tag. GitHub then (about 10 minutes, nothing to do):
 builds the **macOS** apps (Apple Silicon + Intel, `.dmg` and `.zip`), builds the **Windows** installer and portable `.exe`, signs the in-app
-update, and publishes the release with your notes. Everything in `release-extras/*.crig` is attached too (that is where the Starter Pack goes).
+update, and publishes the release with your notes. Any `.crig` in `release-extras/` would be attached too, but yours is not committed: after the release finishes, edit it on GitHub and drag your collection `.crig` in.
 `npm run release -- --dry` only checks.
 
 ## One-time set-up
@@ -22,7 +22,7 @@ update, and publishes the release with your notes. Everything in `release-extras
 
 ## What people get
 - **Releases page downloads:** `Cursor-Rig-<v>-arm64.dmg` / `-x64.dmg` (macOS), `Cursor-Rig-Setup-<v>.exe` (Windows installer) and `Cursor-Rig-Portable-<v>.exe`.
-  Zero cursorchains inside. The sample pack is the separate `Cursor-Rig-Starter-Pack.crig`: import it (menu > Import) or double-click it.
+  Zero cursorchains inside. Your collection is a separate `.crig` you attach to the release by hand: people import it (menu > Import) or double-click it.
 - **`.crig` files** show the Cursor Rig icon and open in the app (Mac: from the .dmg app; Windows: installer registers it, the portable exe and unzipped folder register it on first launch).
 - **macOS first open:** the app is not notarized (that needs a paid Apple developer account), so the first time: right-click the app > Open.
 
