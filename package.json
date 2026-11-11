@@ -1,7 +1,7 @@
 {
   "name": "cursor-rig",
   "productName": "Cursor Rig",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Hang a physics-simulated chain or rig from your mouse cursor, with a 3D rig editor.",
   "main": "main.js",
   "author": "bw",
@@ -117,7 +117,11 @@
       "artifactName": "Cursor-Rig-Setup-${version}.${ext}",
       "oneClick": true,
       "perMachine": false,
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "shortcutName": "Cursor Rig"
     },
     "portable": {
       "artifactName": "Cursor-Rig-Portable-${version}.${ext}"
