@@ -1,7 +1,7 @@
 {
   "name": "cursor-rig",
   "productName": "Cursor Rig",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Hang a physics-simulated chain or rig from your mouse cursor, with a 3D rig editor.",
   "main": "main.js",
   "author": "bw",
@@ -100,7 +100,9 @@
           "role": "Editor",
           "icon": "crig.icns"
         }
-      ]
+      ],
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
     },
     "linux": {
       "icon": "assets/icon.png"
@@ -116,7 +118,8 @@
     },
     "dmg": {
       "artifactName": "Cursor-Rig-${version}-${arch}.${ext}"
-    }
+    },
+    "afterPack": "scripts/adhoc-sign.js"
   },
   "cursorRig": {
     "updateUrl": "",

@@ -1,6 +1,6 @@
-First public release.
+First public release (fixes the macOS "damaged" message on Apple Silicon).
 
 - Cursorchains, cursorbits and cursor emitters hang from, orbit and drift off your mouse cursor, with a 3D rig editor.
-- Nothing is pre-loaded: import the Starter Pack (Cursor-Rig-Starter-Pack.crig, attached to this release) or your own .crig files.
+- Nothing is pre-loaded: import the .crig collection attached to this release (or your own .crig files).
 - Double-click any .crig file to open it in Cursor Rig.
 - Updates are signed and installed from inside the app (About > Check for updates).
