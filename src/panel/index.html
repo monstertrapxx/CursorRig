@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Cursor Rig</title>
+<link rel="stylesheet" href="../shared/theme.css">
+<link rel="stylesheet" href="./panel.css">
+<script type="importmap">
+{ "imports": {
+  "three": "/node_modules/three/build/three.module.js",
+  "three/addons/": "/node_modules/three/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="card" data-view="home">
+
+  <!-- HOME: a sideways strip of your chains -->
+  <section class="view home">
+    <header class="top">
+      <span class="logo" role="img" aria-label="Cursor Rig"></span>
+      <label class="showrig"><span class="switch"><input type="checkbox" id="visible"><span></span></span>Show rig</label>
+      <span class="seg" id="lib-view" title="3D shows your chains live in 3D. List is plain text and the lightest option for older computers."><button data-v="drawer">3D</button><button data-v="list">List</button></span>
+      <span class="grow"></span>
+      <button class="btn ghost" id="centre" title="Choose where on the mouse cursor everything hangs from">Centre</button>
+      <button class="btn ghost" id="new">+ New</button>
+      <button class="btn ghost" id="import" title="Import a .crig file: a single cursorchain, cursorbit, cursor emitter, or a whole folder of them (older .cursorrig and .cursorchain files work too)">Import</button>
+      <button class="btn ghost icon" id="about" title="About Cursor Rig and updates"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r=".6" fill="currentColor"/></svg><span class="dot" id="about-dot" hidden></span></button>
+      <button class="btn ghost icon" id="gear" title="Settings"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg></button>
+      <button class="btn ghost icon" id="hide" title="Hide this menu (the rig keeps running)"><svg class="i" viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+      <button class="btn quit" id="quit" title="Quit Cursor Rig completely"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.3 7.2a8 8 0 1 0 11.4 0"/></svg>Quit</button>
+    </header>
+    <div class="subbar">
+      <span class="seg" id="type-filter" title="The three kinds of cursorchain"><button data-t="all">All</button><button data-t="chain">Cursorchains</button><button data-t="orbit">Cursorbits</button><button data-t="particles">Cursor Emitters</button></span>
+      <nav class="crumbs" id="crumbs" aria-label="Folder"></nav>
+      <span class="grow"></span>
+      <button class="btn ghost sm" id="f-new" title="Make a new folder here">+ Folder</button>
+      <button class="btn ghost sm" id="f-rename" title="Rename this folder" hidden>Rename</button>
+      <input type="search" id="search" placeholder="Search all">
+    </div>
+    <div class="strip" id="strip"></div>
+    <footer class="bar">
+      <div class="sel"><b id="sel-name"></b><span id="sel-tag"></span></div>
+      <span class="grow"></span>
+      <button class="btn" id="move" title="Move the highlighted chain into a folder">Move to…</button>
+      <button class="btn" id="inv" title="Open the inventory on top of this menu: search, sort and manage everything">Inventory</button>
+      <button class="btn primary" id="equip">Equip</button>
+      <button class="btn" id="edit">Edit</button>
+    </footer>
+  </section>
+
+  <!-- PROFILE: one chain's name and settings -->
+  <section class="view profile">
+    <header class="top">
+      <button class="btn ghost" id="p-back">‹ Back</button>
+      <span class="grow"></span>
+      <span class="note" id="p-note"></span>
+      <button class="btn" id="p-save">Saved ✓</button>
+      <button class="btn" id="p-equip">Equip</button>
+      <div class="unsaved" id="p-unsaved" hidden><b>Unsaved changes</b><span class="grow"></span><button class="btn primary" id="u-save">Save</button><button class="btn" id="u-discard">Discard</button><button class="btn ghost" id="u-keep">Keep editing</button></div>
+    </header>
+    <div class="p-body">
+      <div class="p-id">
+        <span class="thumb" id="p-thumb"></span>
+        <label class="field">Name<input type="text" id="p-name" maxlength="80"></label>
+        <button class="btn primary" id="p-editor">Edit in editor</button>
+        <button class="btn" id="p-file">Generate .crig file</button>
+      </div>
+      <div class="p-controls" id="p-controls"></div>
+    </div>
+    <footer class="p-foot">
+      <button class="link" id="p-fav">Favourite</button>
+      <button class="link" id="p-dup">Duplicate</button>
+      <button class="link" id="p-reset">Reset this chain's settings</button>
+      <span class="grow"></span>
+      <button class="link danger" id="p-del">Delete chain</button>
+    </footer>
+  </section>
+
+  <!-- ABOUT: what this program is, and updates -->
+  <section class="view about">
+    <header class="top">
+      <button class="btn ghost" id="a-back">‹ Back</button>
+      <b class="vtitle">About</b>
+      <span class="grow"></span>
+      <button class="btn quit" id="quit3"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.3 7.2a8 8 0 1 0 11.4 0"/></svg>Quit</button>
+    </header>
+    <div class="s-body">
+      <div class="s-col">
+        <h4>Cursor Rig</h4>
+        <p class="a-name"><b id="a-name">Cursor Rig</b> <span class="a-ver" id="a-ver"></span></p>
+        <p class="h-note" id="a-desc"></p>
+        <p class="h-note small" id="a-meta"></p>
+        <div class="row"><span>Your chains and settings</span><button class="btn sm" id="a-data">Open folder</button></div>
+        <div class="row" id="a-home-row" hidden><span>Project page</span><button class="btn sm" id="a-home">Open</button></div>
+        <p class="h-note small">Updating only replaces the program. Everything you made, your chains, models, folders and settings, stays exactly as it is.</p>
+      </div>
+      <div class="s-col">
+        <h4>Updates</h4>
+        <div class="upd" id="upd">
+          <div class="upd-line"><span class="upd-dot" id="upd-dot"></span><b id="upd-title">Checking…</b></div>
+          <p class="h-note small" id="upd-sub"></p>
+          <div class="upd-bar" id="upd-bar" hidden><i id="upd-fill"></i></div>
+          <pre class="upd-notes" id="upd-notes" hidden></pre>
+          <div class="upd-btns"><button class="btn primary" id="upd-go" hidden>Update</button><button class="btn" id="upd-check">Check for updates</button></div>
+        </div>
+        <div class="row"><span>Check automatically</span><span class="switch"><input type="checkbox" id="upd-auto"><span></span></span></div>
+        <p class="h-note small" id="upd-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETTINGS: things that apply to the whole app -->
+  <section class="view settings">
+    <header class="top">
+      <button class="btn ghost" id="s-back">‹ Back</button>
+      <b class="vtitle">Settings</b>
+      <span class="grow"></span>
+      <button class="btn quit" id="quit2"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.3 7.2a8 8 0 1 0 11.4 0"/></svg>Quit</button>
+    </header>
+    <div class="s-body">
+      <div class="s-col">
+        <h4>Look</h4>
+        <div class="row"><span>Appearance</span><span class="seg" id="theme"><button data-theme="dark">Dark</button><button data-theme="light">Light</button></span></div>
+        <h4>Shortcuts</h4>
+        <div class="row"><span>Open this menu</span><button class="kbd-btn" data-key="hotkeyMenu"></button></div>
+        <div class="row"><span>Show / hide rig</span><button class="kbd-btn" data-key="hotkeyToggle"></button></div>
+      </div>
+      <div class="s-col">
+        <div class="poscard">
+          <b>Chain position</b>
+          <p>Is everything hanging in the wrong spot on your mouse cursor? Press the button, then nudge the red dot until it sits where every chain, bit and emitter should attach.</p>
+          <button class="btn primary" id="hang-open">Set chain position on my cursor</button>
+        </div>
+        <h4>This computer</h4>
+        <div class="row" id="row-login"><span>Start with Windows</span><label class="switch"><input type="checkbox" data-key="launchAtLogin"><span></span></label></div>
+        <div class="row"><span>Performance mode (older computers)</span><label class="switch"><input type="checkbox" data-key="lowPower"><span></span></label></div>
+        <div class="row"><span>Compatibility graphics (restarts)</span><label class="switch"><input type="checkbox" data-key="compatMode"><span></span></label></div>
+        <h4>Chains</h4>
+        <div class="links"><button class="link" id="folder">Open chains folder</button><button class="link" id="defaults">Restore sample chains</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HANG POINT: one position shared by every chain -->
+  <section class="view hang">
+    <header class="top">
+      <b class="vtitle">Set up your chain position</b>
+      <span class="grow"></span>
+      <button class="btn primary" id="h-done">Done</button>
+    </header>
+    <div class="h-body">
+      <p class="h-note">Move your mouse: a small <b style="color:#ff4a4a">red dot</b> follows it on your screen. Nudge it until it sits where every chain should hang from. Nothing here assumes a particular pointer image, so it works on any system. Shared by all your chains.</p>
+      <div class="h-row">
+        <div class="h-pad">
+          <span></span><button class="btn" data-n="0,-1">▲</button><span></span>
+          <button class="btn" data-n="-1,0">◀</button><output id="h-read"></output><button class="btn" data-n="1,0">▶</button>
+          <span></span><button class="btn" data-n="0,1">▼</button><span></span>
+        </div>
+        <div class="h-col">
+          <button class="btn" id="h-default" title="Put the shared centre back to the built-in position for this computer (just below the cursor tip)">Reset to default</button>
+          <div class="h-label">Presets</div>
+          <div class="h-presets" id="h-presets"></div>
+          <div class="h-save"><input id="h-name" type="text" maxlength="24" placeholder="Name this position"><button class="btn" id="h-save">Save</button></div>
+        </div>
+      </div>
+      <p class="h-note small">Arrow keys also nudge (Shift for bigger steps). Saved presets stay in your settings.</p>
+    </div>
+  </section>
+
+</div>
+<div class="inv-layer" id="inv-layer" hidden><iframe id="inv-frame" title="Inventory"></iframe></div>
+<div class="dlg-back" id="dlg" hidden>
+  <form class="dlg" id="dlg-form"><b id="dlg-t"></b><input type="text" id="dlg-i"><div class="dlg-list" id="dlg-l" hidden></div><div class="acts" id="dlg-b"></div></form>
+</div>
+<script type="module" src="./panel.js"></script>
+</body>
+</html>

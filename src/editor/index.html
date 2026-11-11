@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Cursor Rig — Editor</title>
+<link rel="stylesheet" href="../shared/theme.css">
+<link rel="stylesheet" href="./editor.css">
+<link rel="stylesheet" href="./retro.css">
+<script type="importmap">
+{ "imports": {
+  "three": "/node_modules/three/build/three.module.js",
+  "three/addons/": "/node_modules/three/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<header class="toolbar">
+  <div class="group">
+    <span class="brand">RIG EDITOR</span>
+    <select id="rig-select" title="Open rig"></select>
+    <button class="btn icon" id="btn-new" title="New rig"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button class="btn" id="btn-save" title="Save to your chains (Ctrl+S). A dot means unsaved changes."><svg class="i" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>Save</button>
+    <button class="btn" id="btn-saveas" title="Save as a new chain, keeping the original (Ctrl+Shift+S)">Save copy</button>
+    <button class="btn" id="btn-export" title="Save a .crig file to share with other people (models included)."><svg class="i" viewBox="0 0 24 24"><path d="M12 15V4M7 9l5-5 5 5M5 20h14"/></svg>Share file</button>
+    <button class="btn ghost icon danger" id="btn-delete" title="Delete rig"><svg class="i" viewBox="0 0 24 24"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg></button>
+  </div>
+  <div class="sep"></div>
+  <div class="group">
+    <button class="btn ghost icon" id="btn-undo" title="Undo (Ctrl+Z)"><svg class="i" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+    <button class="btn ghost icon" id="btn-redo" title="Redo (Ctrl+Y)"><svg class="i" viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
+  </div>
+  <div class="sep"></div>
+  <div class="group seg" id="gizmo-modes">
+    <button class="btn" data-mode="translate" title="Move (W)">Move <span class="k">W</span></button>
+    <button class="btn" data-mode="rotate" title="Rotate (E)">Rotate <span class="k">E</span></button>
+    <button class="btn" data-mode="scale" title="Scale (R)">Scale <span class="k">R</span></button>
+  </div>
+  <div class="sep"></div>
+  <div class="group">
+    <button class="btn" id="btn-sim" title="Simulate (Space)"><svg class="i" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg><span>Simulate</span></button>
+    <button class="btn" id="btn-front" title="Look straight on, exactly how it appears hanging from your cursor on the desktop. Depth moves (toward/away from the camera) do not show there.">Desktop view</button>
+    <button class="btn" id="btn-chains" title="Find every chain in this rig, highlight it with its bones, check it and fix problems or extend it">Chains <span class="badge" id="chain-badge" hidden></span></button>
+    <button class="btn" id="btn-check" title="Look for settings that make this rig stiff or twitchy">Check</button>
+  </div>
+  <span class="grow"></span>
+  <div class="group">
+    <div class="dd down">
+      <button class="btn" id="view-btn" title="Things to show or turn on while editing">View ▾</button>
+      <div class="dd-menu" id="view-menu">
+        <label class="chk" title="Show the bones that join the segments"><input type="checkbox" id="chk-bones" checked> Bones</label>
+        <label class="chk"><input type="checkbox" id="chk-grid" checked> Grid</label>
+        <label class="chk" title="Parts with Idle spin turn on your cursor. Tick to see them turn here too."><input type="checkbox" id="chk-spin"> Show spin</label>
+        <label class="chk" title="Move the cursor automatically while simulating"><input type="checkbox" id="chk-swing"> Auto-swing</label>
+      </div>
+    </div>
+    <button class="btn primary" id="btn-use" title="Save and hang this rig from your cursor">Use on desktop</button>
+  </div>
+</header>
+
+<div class="body">
+  <aside class="left">
+    <div class="side-tabs" id="side-tabs">
+      <button class="on" data-tab="build" title="Build a keychain the easy way: what it hangs from, chain links or string, a charm at the bottom">Builder</button>
+      <button data-tab="tree" title="The technical view: every segment, part and bone">Parts &amp; bones</button>
+    </div>
+    <div class="builder-pane" id="builder"></div>
+    <div class="tree-pane" id="tree-pane" hidden>
+    <div class="pane-head"><span class="label">Hierarchy</span>
+      <span class="grow"></span>
+      <button class="btn ghost mini" id="tree-fold" title="Fold every branch so only the top level shows">Fold all</button>
+      <button class="btn ghost mini" id="tree-unfold" title="Open every branch">Open all</button>
+    </div>
+    <div class="tree-find"><input type="search" id="tree-filter" placeholder="Find a part or segment…" title="Type part of a name to show only matching items"></div>
+    <div class="tree" id="tree"></div>
+    <div class="add-bar">
+      <button class="btn" id="add-seg" title="Add a segment under the selection">+ Segment</button>
+      <button class="btn" id="add-chain" title="Add a run of segments under the selection">+ Chain…</button>
+      <button class="btn" id="add-link" title="Add one more link to the end of the selected chain (copies the link above it)">+ Link</button>
+      <button class="btn" id="add-extend" title="Make a chain longer: add several links to its end, or insert chain between two parts">Extend…</button>
+      <div class="dd">
+        <button class="btn" id="add-part">+ Part ▾</button>
+        <div class="dd-menu" id="part-menu"></div>
+      </div>
+      <button class="btn" id="add-model" title="Import .glb / .gltf / .obj / .stl and attach it">Import model…</button>
+    </div>
+  </div>
+  </aside>
+
+  <div class="viewport" id="viewport">
+    <div class="vp-status" id="vp-status"></div>
+    <div class="vp-hint" id="vp-hint"></div>
+    <div class="chain-panel" id="chain-panel" hidden></div>
+  </div>
+
+  <aside class="right">
+    <div class="pane-head"><span class="label" id="insp-title">Inspector</span><span class="grow"></span>
+      <button class="btn ghost mini" id="insp-fold" title="Fold or open every group in the inspector">Fold groups</button>
+      <label class="chk" title="Show or hide the grey help text under each group"><input type="checkbox" id="chk-hints"> Hints</label></div>
+    <div class="inspector" id="inspector"></div>
+  </aside>
+</div>
+
+<div class="modal-back" id="modal" hidden>
+  <form class="modal" id="modal-form">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-foot">
+      <button type="button" class="btn ghost" id="modal-cancel">Cancel</button>
+      <button type="submit" class="btn primary" id="modal-ok">OK</button>
+    </div>
+  </form>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module" src="./editor.js"></script>
+</body>
+</html>

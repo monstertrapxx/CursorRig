@@ -1,0 +1,47 @@
+<!doctype html>
+<html data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>Cursor Rig: Inventory</title>
+<link rel="stylesheet" href="../shared/theme.css">
+<link rel="stylesheet" href="../editor/retro.css">
+<link rel="stylesheet" href="./inventory.css">
+<script type="importmap">
+{ "imports": {
+  "three": "/node_modules/three/build/three.module.js",
+  "three/addons/": "/node_modules/three/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="side-head"><span>Inventory</span><button class="btn closebtn" id="close" title="Back to the menu (Esc)">Close ✕</button></div>
+    <nav id="smart" class="nav"></nav>
+    <div class="side-sub"><span>Folders</span><button class="btn ghost icon" id="g-new" title="New folder (inside the open folder, if you are in one)">+</button><button class="btn ghost icon" id="g-all" title="Save your whole library (every cursorchain, cursorbit, cursor emitter and folder) as one .crig">⤓</button></div>
+    <nav id="groups" class="nav"></nav>
+  </aside>
+  <main class="main">
+    <header class="bar">
+      <span class="where" id="where"></span>
+      <input type="search" id="q" placeholder="Search your chains">
+      <select id="sort" title="Sort">
+        <option value="name">Name A to Z</option>
+        <option value="name-desc">Name Z to A</option>
+        <option value="type">Type</option>
+        <option value="size">Most links first</option>
+      </select>
+      <span class="seg" id="zoom" title="Card size"><button data-z="s">S</button><button data-z="m">M</button><button data-z="l">L</button></span>
+      <span class="grow"></span>
+      <span class="count" id="count"></span>
+    </header>
+    <section class="grid" id="grid"></section>
+  </main>
+  <aside class="detail" id="detail"></aside>
+</div>
+<div class="dlg-back" id="dlg" hidden>
+  <form class="dlg" id="dlg-form"><b id="dlg-t"></b><input type="text" id="dlg-i"><div class="dlg-list" id="dlg-l" hidden></div><div class="acts" id="dlg-b"></div></form>
+</div>
+<script type="module" src="./inventory.js"></script>
+</body>
+</html>

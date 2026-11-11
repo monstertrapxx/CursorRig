@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.signing/
+.update-backup/
+_to_delete/
+debug-*
+*.before-*
+*.updating
+.DS_Store
+# the sample cursorchains / cursorbits / cursor emitters are NOT part of the app: they ship as a separate .crig (release-extras/)
+default-rigs/
+RELEASE-NOTES.txt.bak
+
+# your own .crig collection is attached to the release by hand, never committed
+release-extras/*.crig

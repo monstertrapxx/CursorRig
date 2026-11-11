@@ -1,0 +1,128 @@
+{
+  "name": "cursor-rig",
+  "productName": "Cursor Rig",
+  "version": "0.2.0",
+  "description": "Hang a physics-simulated chain or rig from your mouse cursor, with a 3D rig editor.",
+  "main": "main.js",
+  "author": "bw",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "test": "node scripts/test-share.js && node scripts/test-feel.js && node scripts/test-check.mjs && node scripts/test-orbit.mjs && node scripts/test-particles.mjs",
+    "make-rigs": "node scripts/make-default-rigs.mjs",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win",
+    "dist:win-legacy": "node scripts/build-legacy.js",
+    "make-update": "node scripts/make-update-zip.js",
+    "dist:win-folder": "electron-builder --win dir --config.asar=false --config.win.signAndEditExecutable=false && node scripts/zip-win-folder.js",
+    "make-keys": "node scripts/make-keys.js",
+    "release": "node scripts/release.js",
+    "starter-crig": "node scripts/make-starter-crig.js"
+  },
+  "dependencies": {
+    "fflate": "^0.8.2",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "electron": "^45.2.3",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.bw.cursorrig",
+    "productName": "Cursor Rig",
+    "files": [
+      "main.js",
+      "preload.js",
+      "share.js",
+      "feel.js",
+      "updater.js",
+      "src/**",
+      "assets/**",
+      "node_modules/three/build/three.module.js",
+      "node_modules/three/build/three.core.js",
+      "node_modules/three/examples/jsm/**",
+      "node_modules/fflate/**",
+      "package.json",
+      "!**/*.before-*",
+      "!**/.DS_Store"
+    ],
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "fileAssociations": [
+        {
+          "ext": "crig",
+          "name": "Cursor Rig item",
+          "description": "Cursor Rig cursorchain, cursorbit, cursor emitter or folder",
+          "role": "Editor",
+          "icon": "crig.ico"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.entertainment",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Cursor-Rig-${version}-${arch}.${ext}",
+      "fileAssociations": [
+        {
+          "ext": "crig",
+          "name": "Cursor Rig item",
+          "description": "Cursor Rig cursorchain, cursorbit, cursor emitter or folder",
+          "role": "Editor",
+          "icon": "crig.icns"
+        }
+      ]
+    },
+    "linux": {
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "artifactName": "Cursor-Rig-Setup-${version}.${ext}",
+      "oneClick": true,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false
+    },
+    "portable": {
+      "artifactName": "Cursor-Rig-Portable-${version}.${ext}"
+    },
+    "dmg": {
+      "artifactName": "Cursor-Rig-${version}-${arch}.${ext}"
+    }
+  },
+  "cursorRig": {
+    "updateUrl": "",
+    "updateRepo": "monstertrapxx/CursorRig",
+    "credit": "bw, forked by MONSTERTRAP",
+    "bundleSamples": false,
+    "updateKey": "MCowBQYDK2VwAyEAFiIWScntNbxuLaow0hlphVYsUfIgyjQkt8+qpaONq+M="
+  }
+}

@@ -1,0 +1,80 @@
+# Runs when scripts/release.js (npm run release) pushes a tag like v0.3.0. Builds macOS + Windows, signs the in-app update, publishes the release.
+name: release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: tag matches package.json
+        run: node -e "const v=require('./package.json').version; if ('v'+v !== process.env.GITHUB_REF_NAME) { console.error('Tag '+process.env.GITHUB_REF_NAME+' does not match package.json version '+v); process.exit(1); }"
+      - name: no sample content is bundled
+        run: node -e "const p=require('./package.json'); if (p.cursorRig.bundleSamples !== false || p.build.files.some(f=>/default-rigs/.test(f))) { console.error('samples must not be bundled'); process.exit(1); }"
+  mac:
+    needs: check
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npx electron-builder --mac --publish never
+        env: { CSC_IDENTITY_AUTO_DISCOVERY: 'false' }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac
+          path: |
+            dist/*.dmg
+            dist/*.zip
+          if-no-files-found: error
+  windows:
+    needs: check
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npx electron-builder --win --publish never
+      - uses: actions/upload-artifact@v4
+        with: { name: windows, path: 'dist/*.exe', if-no-files-found: error }
+  update:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: signed update (the in-app updater downloads this)
+        run: node scripts/make-update-zip.js
+        env: { UPDATE_SIGNING_KEY: '${{ secrets.UPDATE_SIGNING_KEY }}' }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: update
+          path: |
+            dist/cursor-rig-update-*.zip
+            dist/cursor-rig-update-*.zip.sig
+          if-no-files-found: error
+  publish:
+    needs: [mac, windows, update]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { path: assets, merge-multiple: true }
+      - name: publish the release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Cursor Rig ${{ github.ref_name }}
+          body_path: RELEASE-NOTES.txt
+          files: |
+            assets/*
+            release-extras/*.crig
+          fail_on_unmatched_files: false

@@ -1,0 +1,85 @@
+/* Editor skin (bare bones): square, flat, black and white, monospace labels, plain 2px lines.
+   Follows the menu's Dark / Light setting. The 3D viewport stays dark in both. */
+:root, html[data-theme=dark] {
+  --bg: #000; --bg-2: #000; --bg-3: #141414;
+  --line: rgba(255,255,255,.35); --line-2: #fff;
+  --text: #fff; --text-2: #d2d2d2; --text-3: #8f8f8f;
+  --accent: #fff; --accent-2: #fff; --accent-ink: #000;
+  --sel: rgba(255,255,255,.18);
+  --edge: #fff;
+  --mono: "Monaco", "Lucida Console", "Andale Mono", "Consolas", "Courier New", monospace;
+  --sans: "Arial Narrow", "Helvetica Neue Condensed", "Arial", sans-serif;
+  color-scheme: dark;
+}
+html[data-theme=light] {
+  --bg: #fff; --bg-2: #fff; --bg-3: #ececec;
+  --line: rgba(0,0,0,.35); --line-2: #000;
+  --text: #000; --text-2: #2c2c2c; --text-3: #5f5f5f;
+  --accent: #000; --accent-2: #000; --accent-ink: #fff;
+  --sel: rgba(0,0,0,.14);
+  --edge: #000;
+  color-scheme: light;
+}
+html, body { font-size: 14px; }
+.brand { color: var(--text); font-family: var(--mono); }
+.label, .vp-status, .vp-hint, .node .mt, .kbd { font-family: var(--mono); }
+.label { color: var(--text-2); }
+
+.toolbar, .isec, aside.left, aside.right, .pane-head, .add-bar { border-color: var(--edge); }
+.toolbar { border-bottom: 2px solid var(--edge); }
+aside.left { border-right: 2px solid var(--edge); }
+aside.right { border-left: 2px solid var(--edge); }
+.pane-head, .add-bar { border-bottom-width: 2px; }
+.add-bar { border-top: 2px solid var(--edge); }
+
+.btn { border: 2px solid var(--edge); border-radius: 0; background: transparent; font: 700 12px var(--mono); text-transform: uppercase; letter-spacing: .03em; height: 30px; }
+.btn:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--edge); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { background: transparent; color: var(--text); }
+.btn.ghost { border-color: transparent; }
+.btn.ghost:hover { border-color: var(--edge); }
+.btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--edge); }
+.btn.on .k { color: var(--accent-ink); }
+.seg .btn, .seg .btn:first-child, .seg .btn:last-child { border-radius: 0; }
+.btn.danger:hover { background: #ff6b5e; border-color: var(--edge); color: #000; }
+#btn-sim.on { background: var(--accent); color: var(--accent-ink); border-color: var(--edge); }
+
+input[type=text], input[type=number], select { border: 2px solid var(--edge); border-radius: 0; background: transparent; height: 28px; }
+input[type=text]:focus, input[type=number]:focus, select:focus { border-color: var(--edge); outline: 1px solid var(--edge); outline-offset: 1px; }
+select option { background: var(--bg); color: var(--text); }
+input[type=color] { border: 2px solid var(--edge); border-radius: 0; height: 28px; }
+input[type=color]::-webkit-color-swatch { border-radius: 0; }
+
+input[type=range]::-webkit-slider-runnable-track { height: 6px; border: 2px solid var(--edge); border-radius: 0; box-sizing: content-box;
+  background: linear-gradient(90deg, var(--accent) var(--p, 50%), transparent var(--p, 50%)); }
+input[type=range]::-webkit-slider-thumb { width: 10px; height: 18px; margin-top: -8px; border-radius: 0; background: var(--bg); border: 2px solid var(--edge); box-shadow: none; }
+.switch span, .switch span::after { border-radius: 0; }
+.check input, .chk input { accent-color: var(--accent); }
+
+.node.sel { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
+.node.sel .nm, .node.sel .mt, .node.sel .tw { color: var(--accent-ink); }
+.node:hover:not(.sel) { background: var(--bg-3); }
+.node.drop-target { outline-color: var(--edge); }
+.dd-menu, .modal, .toast { border: 2px solid var(--edge); border-radius: 0; box-shadow: none; background: var(--bg); }
+.dd-menu button { border-radius: 0; }
+.dd-menu button:hover { background: var(--accent); color: var(--accent-ink); }
+.modal-title { font: 700 13px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.modal-foot { border-top: 2px solid var(--edge); }
+.modal-body .note { border-radius: 0; background: transparent; border: 2px solid var(--edge); border-left-width: 2px; }
+.vp-status .pill { border-radius: 0; border: 2px solid var(--edge); background: rgba(0,0,0,.6); color: #fff; }
+.vp-status .pill.dirty { color: #fff; border-color: #fff; }
+.vp-status .pill.sim { background: #fff; color: #000; border-color: #fff; }
+.vp-hint { color: #aaa; }
+.f > .fl.scrub:hover { color: var(--text); text-decoration: underline; }
+::-webkit-scrollbar-thumb { background: var(--edge); border: 2px solid transparent; background-clip: padding-box; border-radius: 0; }
+#btn-save.dirty::after { content: "\2022"; margin-left: 2px; font-size: 18px; line-height: 0; }
+
+/* keep the toolbar on one line on smaller windows */
+.chk, .toolbar .btn { white-space: nowrap; }
+.toolbar { gap: 6px; }
+@media (max-width: 1500px) { .brand { display: none; } .toolbar .btn .k { display: none; } }
+
+/* the toolbar wraps onto a second row rather than cutting buttons off */
+.toolbar { height: auto; min-height: 48px; flex-wrap: wrap; row-gap: 6px; padding: 6px 10px; }
+.toolbar .group { flex-wrap: nowrap; }
+.toolbar .grow { flex: 1 1 0; min-width: 0; }
