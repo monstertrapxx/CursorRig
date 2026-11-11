@@ -1,7 +1,7 @@
 {
   "name": "cursor-rig",
   "productName": "Cursor Rig",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Hang a physics-simulated chain or rig from your mouse cursor, with a 3D rig editor.",
   "main": "main.js",
   "author": "bw",
@@ -40,11 +40,17 @@
       "assets/**",
       "node_modules/three/build/three.module.js",
       "node_modules/three/build/three.core.js",
-      "node_modules/three/examples/jsm/**",
       "node_modules/fflate/**",
       "package.json",
       "!**/*.before-*",
-      "!**/.DS_Store"
+      "!**/.DS_Store",
+      {
+        "from": "node_modules/three/examples/jsm",
+        "to": "node_modules/three/examples/jsm",
+        "filter": [
+          "**/*"
+        ]
+      }
     ],
     "win": {
       "icon": "assets/icon.ico",

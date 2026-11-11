@@ -1,4 +1,4 @@
-First public release (fixes the macOS "damaged" message on Apple Silicon).
+First public release. Fixes: the macOS app would not open on Apple Silicon, and the menu buttons did nothing.
 
 - Cursorchains, cursorbits and cursor emitters hang from, orbit and drift off your mouse cursor, with a 3D rig editor.
 - Nothing is pre-loaded: import the .crig collection attached to this release (or your own .crig files).
